@@ -80,7 +80,7 @@
         const fileInput = document.getElementById('fileInput');
         const fileDisplay = document.querySelector('.file-name');
 
-        // Function to perform analysis using OpenAI API
+        // Function to perform analysis using OpenAI API with ChatGPT
         async function performOpenAIAnalysis(jsonData) {
             const apiKey = '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'; // Replace with your actual API key
             const textToAnalyze = JSON.stringify(jsonData);
@@ -93,31 +93,52 @@
                         'Authorization': `Bearer ${apiKey}`,
                     },
                     body: JSON.stringify({
-                        prompt: textToAnalyze,
-                        max_tokens: 50, // Adjust as needed
+                        prompt: `Analyzing Facebook ad data: ${textToAnalyze}`,
+                        max_tokens: 100, // Adjust as needed
                     }),
                 });
 
                 const result = await response.json();
-                return result.choices[0].text;
+                const analysisResult = result.choices[0].text;
+
+                // Extract key points and actions from the analysis result
+                const keyPoints = extractKeyPoints(analysisResult);
+                const actions = extractActions(analysisResult);
+
+                return { analysis: analysisResult, keyPoints, actions };
             } catch (error) {
                 console.error('Error analyzing data with OpenAI:', error);
                 return 'Error analyzing data';
             }
         }
 
-        // Function to perform analysis on jsonData (replace with your analysis logic)
-        function performAnalysis(jsonData) {
-            // Replace this with your actual analysis logic
-            const totalRows = jsonData.length;
-            const totalColumns = Object.keys(jsonData[0]).length;
-            return `Total Rows: ${totalRows}, Total Columns: ${totalColumns}`;
+        // Function to extract key points from the analysis result
+        function extractKeyPoints(analysisResult) {
+            // Implement logic to extract key points from the analysis text
+            // For example, you can use regular expressions or specific keywords
+            // Return key points as an array of strings
+            return [];
+        }
+
+        // Function to extract actions from the analysis result
+        function extractActions(analysisResult) {
+            // Implement logic to extract actions from the analysis text
+            // For example, you can use regular expressions or specific keywords
+            // Return actions as an array of strings
+            return [];
         }
 
         // Function to display analysis results in the HTML
         function displayResults(results) {
             const analysisResults = document.getElementById('analysisResults');
-            analysisResults.textContent = results;
+            analysisResults.innerHTML = `
+                <h2>Analysis Results:</h2>
+                <p>${results.analysis}</p>
+                <h2>Key Points:</h2>
+                <ul>${results.keyPoints.map(point => `<li>${point}</li>`).join('')}</ul>
+                <h2>Actions to Take:</h2>
+                <ul>${results.actions.map(action => `<li>${action}</li>`).join('')}</ul>
+            `;
         }
 
         // Add an event listener for the Analyze button
@@ -139,14 +160,8 @@
                     // Perform analysis using OpenAI
                     const openAIAnalysisResults = await performOpenAIAnalysis(jsonData);
 
-                    // Perform your analysis
-                    const customAnalysisResults = performAnalysis(jsonData);
-
-                    // Combine or choose which analysis results to display
-                    const combinedResults = `${openAIAnalysisResults}\n\nCustom Analysis:\n${customAnalysisResults}`;
-
                     // Display analysis results
-                    displayResults(combinedResults);
+                    displayResults(openAIAnalysisResults);
                 };
 
                 reader.readAsBinaryString(selectedFile);
