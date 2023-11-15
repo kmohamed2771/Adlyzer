@@ -41,6 +41,16 @@
         .file-name {
             margin-left: 10px;
         }
+        .analyze-btn {
+            margin-top: 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
 </head>
@@ -54,12 +64,22 @@
             <span class="file-name">No file selected</span>
         </div>
         <p>Supported formats: .xlsx, .xls, .csv</p>
+        
+        <!-- Add the Analyze Button -->
+        <button class="analyze-btn" id="analyzeButton">Analyze</button>
     </div>
 
    <script>
     // JavaScript to display selected file name and handle file extraction
     const fileInput = document.getElementById('fileInput');
     const fileDisplay = document.querySelector('.file-name');
+    
+    // Add an event listener for the Analyze button
+    const analyzeButton = document.getElementById('analyzeButton');
+    analyzeButton.addEventListener('click', () => {
+        // Trigger the analysis process here when the button is clicked
+        alert('Analyzing data...'); // Replace with your analysis code
+    });
 
     fileInput.addEventListener('change', (e) => {
         const selectedFile = e.target.files[0];
