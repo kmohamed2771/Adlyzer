@@ -42,6 +42,7 @@
             margin-left: 10px;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -84,6 +85,34 @@
             fileDisplay.textContent = 'No file selected';
         }
     });
+
+       fileInput.addEventListener('change', (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+        fileDisplay.textContent = selectedFile.name;
+
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+            const data = event.target.result;
+
+            // Use XLSX to read the Excel data
+            const workbook = XLSX.read(data, { type: 'binary' });
+            const sheetName = workbook.SheetNames[0]; // Assuming the data is in the first sheet
+            const sheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+            // Now, jsonData contains the extracted data from the Excel file.
+            // You can access and manipulate this data as needed.
+            console.log(jsonData); // Print the data to the console as an example
+        };
+
+        reader.readAsBinaryString(selectedFile);
+    } else {
+        fileDisplay.textContent = 'No file selected';
+    }
+});
+
 </script>
 
 </body>
