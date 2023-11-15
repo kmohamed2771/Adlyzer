@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Ad Data Upload</title>
+    <style>
+        /* Add your CSS styling here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .btn {
+            border: 2px solid gray;
+            color: gray;
+            background-color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+        .file-name {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Your Facebook Ad Data</h1>
+        <p>Select your Excel file to analyze:</p>
+        <div class="upload-btn-wrapper">
+            <button class="btn">Upload a file</button>
+            <input type="file" name="myfile" id="fileInput" accept=".xlsx, .xls, .csv" />
+            <span class="file-name">No file selected</span>
+        </div>
+        <p>Supported formats: .xlsx, .xls, .csv</p>
+    </div>
+
+    <script>
+        // JavaScript to display selected file name
+        const fileInput = document.getElementById('fileInput');
+        const fileDisplay = document.querySelector('.file-name');
+
+        fileInput.addEventListener('change', (e) => {
+            const selectedFile = e.target.files[0];
+            if (selectedFile) {
+                fileDisplay.textContent = selectedFile.name;
+            } else {
+                fileDisplay.textContent = 'No file selected';
+            }
+        });
+    </script>
+</body>
+</html>
