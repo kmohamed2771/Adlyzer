@@ -75,55 +75,85 @@
         <div class="results" id="analysisResults"></div>
     </div>
 
-   <script>
-    // JavaScript to display selected file name and handle file extraction
-    const fileInput = document.getElementById('fileInput');
-    const fileDisplay = document.querySelector('.file-name');
+    <script>
+        // JavaScript to display selected file name and handle file extraction
+        const fileInput = document.getElementById('fileInput');
+        const fileDisplay = document.querySelector('.file-name');
 
-    // Add an event listener for the Analyze button
-    const analyzeButton = document.getElementById('analyzeButton');
-    analyzeButton.addEventListener('click', () => {
-        const selectedFile = fileInput.files[0];
-        if (selectedFile) {
-            fileDisplay.textContent = selectedFile.name;
+        // Function to perform analysis using OpenAI API
+        async function performOpenAIAnalysis(jsonData) {
+            const apiKey = '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'; // Replace with your actual API key
+            const textToAnalyze = JSON.stringify(jsonData);
 
-            const reader = new FileReader();
+            try {
+                const response = await fetch('https://api.openai.com/v1/engines/davinci/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                    },
+                    body: JSON.stringify({
+                        prompt: textToAnalyze,
+                        max_tokens: 50, // Adjust as needed
+                    }),
+                });
 
-            reader.onload = (event) => {
-                const data = event.target.result;
-                const workbook = XLSX.read(data, { type: 'binary' });
-                const sheetName = workbook.SheetNames[0]; // Assuming the data is in the first sheet
-                const sheet = workbook.Sheets[sheetName];
-                const jsonData = XLSX.utils.sheet_to_json(sheet);
-
-                // Perform analysis on jsonData
-                const analysisResults = performAnalysis(jsonData);
-
-                // Display analysis results
-                displayResults(analysisResults);
-            };
-
-            reader.readAsBinaryString(selectedFile);
-        } else {
-            fileDisplay.textContent = 'No file selected';
+                const result = await response.json();
+                return result.choices[0].text;
+            } catch (error) {
+                console.error('Error analyzing data with OpenAI:', error);
+                return 'Error analyzing data';
+            }
         }
-    });
 
-    // Function to perform analysis on jsonData (replace with your analysis logic)
-    function performAnalysis(jsonData) {
-        // Replace this with your actual analysis logic
-        const totalRows = jsonData.length;
-        const totalColumns = Object.keys(jsonData[0]).length;
-        return `Total Rows: ${totalRows}, Total Columns: ${totalColumns}`;
-    }
+        // Function to perform analysis on jsonData (replace with your analysis logic)
+        function performAnalysis(jsonData) {
+            // Replace this with your actual analysis logic
+            const totalRows = jsonData.length;
+            const totalColumns = Object.keys(jsonData[0]).length;
+            return `Total Rows: ${totalRows}, Total Columns: ${totalColumns}`;
+        }
 
-    // Function to display analysis results in the HTML
-    function displayResults(results) {
-        const analysisResults = document.getElementById('analysisResults');
-        analysisResults.textContent = results;
-    }
+        // Function to display analysis results in the HTML
+        function displayResults(results) {
+            const analysisResults = document.getElementById('analysisResults');
+            analysisResults.textContent = results;
+        }
 
-</script>
+        // Add an event listener for the Analyze button
+        const analyzeButton = document.getElementById('analyzeButton');
+        analyzeButton.addEventListener('click', async () => {
+            const selectedFile = fileInput.files[0];
+            if (selectedFile) {
+                fileDisplay.textContent = selectedFile.name;
 
+                const reader = new FileReader();
+
+                reader.onload = async (event) => {
+                    const data = event.target.result;
+                    const workbook = XLSX.read(data, { type: 'binary' });
+                    const sheetName = workbook.SheetNames[0]; // Assuming the data is in the first sheet
+                    const sheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                    // Perform analysis using OpenAI
+                    const openAIAnalysisResults = await performOpenAIAnalysis(jsonData);
+
+                    // Perform your analysis
+                    const customAnalysisResults = performAnalysis(jsonData);
+
+                    // Combine or choose which analysis results to display
+                    const combinedResults = `${openAIAnalysisResults}\n\nCustom Analysis:\n${customAnalysisResults}`;
+
+                    // Display analysis results
+                    displayResults(combinedResults);
+                };
+
+                reader.readAsBinaryString(selectedFile);
+            } else {
+                fileDisplay.textContent = 'No file selected';
+            }
+        });
+    </script>
 </body>
 </html>
