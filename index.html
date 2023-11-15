@@ -55,19 +55,36 @@
         <p>Supported formats: .xlsx, .xls, .csv</p>
     </div>
 
-    <script>
-        // JavaScript to display selected file name
-        const fileInput = document.getElementById('fileInput');
-        const fileDisplay = document.querySelector('.file-name');
+   <script>
+    // JavaScript to display selected file name and handle file extraction
+    const fileInput = document.getElementById('fileInput');
+    const fileDisplay = document.querySelector('.file-name');
 
-        fileInput.addEventListener('change', (e) => {
-            const selectedFile = e.target.files[0];
-            if (selectedFile) {
-                fileDisplay.textContent = selectedFile.name;
-            } else {
-                fileDisplay.textContent = 'No file selected';
-            }
-        });
-    </script>
+    fileInput.addEventListener('change', (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            fileDisplay.textContent = selectedFile.name;
+
+            // Add the file extraction code here
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                const data = event.target.result;
+                const workbook = XLSX.read(data, { type: 'binary' });
+                const sheetName = workbook.SheetNames[0]; // Assuming the data is in the first sheet
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                // Now, jsonData contains the extracted data from the Excel file.
+                // You can proceed to preprocess and analyze it.
+            };
+
+            reader.readAsBinaryString(selectedFile);
+        } else {
+            fileDisplay.textContent = 'No file selected';
+        }
+    });
+</script>
+
 </body>
 </html>
