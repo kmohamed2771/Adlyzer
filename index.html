@@ -138,6 +138,34 @@ fileInput.addEventListener('change', (e) => {
     }
 });
 
+       const { OpenAIApi } = require('openai');
+
+// Set your OpenAI API key here
+const apiKey = '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';
+
+const openai = new OpenAIApi({
+    apiKey: apiKey,
+});
+
+// Use the openai object to make API requests
+openai.analyze({
+    model: 'YOUR_MODEL', // Specify the OpenAI model you want to use
+    prompt: 'Your prompt text here', // Customize this based on your analysis needs
+    max_tokens: 150, // Adjust based on your desired response length
+})
+    .then((response) => {
+        // Handle the API response here
+        const analysisResult = response.data.choices[0].text;
+        console.log('OpenAI Analysis:', analysisResult);
+
+        // You can now use the analysis result in your tool's logic
+    })
+    .catch((error) => {
+        // Handle API errors here
+        console.error('OpenAI API Error:', error);
+    });
+
+
 </script>
 
 </body>
