@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facebook Ad Data Upload</title>
+    <title>Facebook Ad Data Upload and Analysis</title>
     <style>
         /* Add your CSS styling here */
         body {
@@ -51,6 +51,9 @@
             font-size: 18px;
             cursor: pointer;
         }
+        .results {
+            margin-top: 20px;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
 </head>
@@ -67,22 +70,20 @@
         
         <!-- Add the Analyze Button -->
         <button class="analyze-btn" id="analyzeButton">Analyze</button>
+
+        <!-- Display Analysis Results -->
+        <div class="results" id="analysisResults"></div>
     </div>
 
    <script>
     // JavaScript to display selected file name and handle file extraction
     const fileInput = document.getElementById('fileInput');
     const fileDisplay = document.querySelector('.file-name');
-    
+
     // Add an event listener for the Analyze button
     const analyzeButton = document.getElementById('analyzeButton');
     analyzeButton.addEventListener('click', () => {
-        // Trigger the analysis process here when the button is clicked
-        alert('Analyzing data...'); // Replace with your analysis code
-    });
-
-    fileInput.addEventListener('change', (e) => {
-        const selectedFile = e.target.files[0];
+        const selectedFile = fileInput.files[0];
         if (selectedFile) {
             fileDisplay.textContent = selectedFile.name;
 
@@ -95,9 +96,11 @@
                 const sheet = workbook.Sheets[sheetName];
                 const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-                // Now, jsonData contains the extracted data from the Excel file.
-                // You can proceed to preprocess and analyze it.
-                console.log(jsonData); // Print the data to the console as an example
+                // Perform analysis on jsonData
+                const analysisResults = performAnalysis(jsonData);
+
+                // Display analysis results
+                displayResults(analysisResults);
             };
 
             reader.readAsBinaryString(selectedFile);
@@ -105,6 +108,20 @@
             fileDisplay.textContent = 'No file selected';
         }
     });
+
+    // Function to perform analysis on jsonData (replace with your analysis logic)
+    function performAnalysis(jsonData) {
+        // Replace this with your actual analysis logic
+        const totalRows = jsonData.length;
+        const totalColumns = Object.keys(jsonData[0]).length;
+        return `Total Rows: ${totalRows}, Total Columns: ${totalColumns}`;
+    }
+
+    // Function to display analysis results in the HTML
+    function displayResults(results) {
+        const analysisResults = document.getElementById('analysisResults');
+        analysisResults.textContent = results;
+    }
 
 </script>
 
