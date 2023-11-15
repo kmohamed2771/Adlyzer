@@ -66,7 +66,6 @@
         if (selectedFile) {
             fileDisplay.textContent = selectedFile.name;
 
-            // Add the file extraction code here
             const reader = new FileReader();
 
             reader.onload = (event) => {
@@ -78,6 +77,7 @@
 
                 // Now, jsonData contains the extracted data from the Excel file.
                 // You can proceed to preprocess and analyze it.
+                console.log(jsonData); // Print the data to the console as an example
             };
 
             reader.readAsBinaryString(selectedFile);
@@ -85,86 +85,6 @@
             fileDisplay.textContent = 'No file selected';
         }
     });
-
-       fileInput.addEventListener('change', (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-        fileDisplay.textContent = selectedFile.name;
-
-        const reader = new FileReader();
-
-        reader.onload = (event) => {
-            const data = event.target.result;
-
-            // Use XLSX to read the Excel data
-            const workbook = XLSX.read(data, { type: 'binary' });
-            const sheetName = workbook.SheetNames[0]; // Assuming the data is in the first sheet
-            const sheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(sheet);
-
-            // Now, jsonData contains the extracted data from the Excel file.
-            // You can access and manipulate this data as needed.
-            console.log(jsonData); // Print the data to the console as an example
-        };
-
-        reader.readAsBinaryString(selectedFile);
-    } else {
-        fileDisplay.textContent = 'No file selected';
-    }
-});
-
-       const XLSX = require('xlsx');
-
-fileInput.addEventListener('change', (e) => {
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-        const reader = new FileReader();
-
-        reader.onload = (event) => {
-            const data = event.target.result;
-            const workbook = XLSX.read(data, { type: 'binary' });
-            const sheetName = workbook.SheetNames[0]; // Assuming the data is in the first sheet
-            const sheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(sheet);
-
-            // Now, jsonData contains the extracted data from the Excel file.
-            // You can proceed to preprocess and analyze it.
-        };
-
-        reader.readAsBinaryString(selectedFile);
-    } else {
-        // Handle the case when no file is selected.
-    }
-});
-
-       const { OpenAIApi } = require('openai');
-
-// Set your OpenAI API key here
-const apiKey = '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';
-
-const openai = new OpenAIApi({
-    apiKey: apiKey,
-});
-
-// Use the openai object to make API requests
-openai.analyze({
-    model: 'YOUR_MODEL', // Specify the OpenAI model you want to use
-    prompt: 'Your prompt text here', // Customize this based on your analysis needs
-    max_tokens: 150, // Adjust based on your desired response length
-})
-    .then((response) => {
-        // Handle the API response here
-        const analysisResult = response.data.choices[0].text;
-        console.log('OpenAI Analysis:', analysisResult);
-
-        // You can now use the analysis result in your tool's logic
-    })
-    .catch((error) => {
-        // Handle API errors here
-        console.error('OpenAI API Error:', error);
-    });
-
 
 </script>
 
