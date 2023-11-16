@@ -82,7 +82,7 @@
 
         // Function to perform analysis using OpenAI API with ChatGPT
         async function performOpenAIAnalysis(jsonData) {
-            const apiKey = '${{ secrets.OPENAI_API_KEY }}'; // Replace with your actual API key
+            const apiKey = '${{secrets.OPENAI_API_KEY}}'; // Replace with your actual API key
             const textToAnalyze = JSON.stringify(jsonData);
 
             try {
